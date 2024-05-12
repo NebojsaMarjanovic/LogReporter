@@ -1,9 +1,8 @@
 ﻿using Unifiedpost.LogReporter.WebApi.Models;
 
-namespace Unifiedpost.LogReporter.WebApi.Contracts
+namespace Unifiedpost.LogReporter.WebApi.Contracts;
+
+public interface ILogReporterService
 {
-    public interface ILogReporterService
-    {
-        Task GenerateReport(LogReportRequest logReportRequest, CancellationToken cancellationToken);
-    }
+    Task GenerateReport(LogReportRequest logReportRequest, CancellationToken cancellationToken);
 }

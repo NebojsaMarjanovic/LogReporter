@@ -1,7 +1,6 @@
-﻿namespace Unifiedpost.LogReporter.WebApi.Configurations
+﻿namespace Unifiedpost.LogReporter.WebApi.Configurations;
+
+public class CsvConfiguration
 {
-    public class CsvConfiguration
-    {
-        public string DestinationPath { get; set; }
-    }
+    public string DestinationPath { get; set; }
 }
