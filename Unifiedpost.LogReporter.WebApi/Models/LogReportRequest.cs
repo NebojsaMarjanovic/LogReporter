@@ -1,12 +1,15 @@
-﻿namespace Unifiedpost.LogReporter.WebApi.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Unifiedpost.LogReporter.WebApi.Models;
 
 
 public class LogReportRequest
 {
+    [Required]
     public List<LogReportRequestParameters> RequestParameters { get; set; }
 }
 
-public record LogReportRequestParameters (string ServiceName, SearchType SearchType, string[]? SpecificLogs, string Keyword, DateTime From, DateTime To);
+public record LogReportRequestParameters ([Required] string ServiceName,[Required] SearchType SearchType, string[]? SpecificLogs,[Required] string Keyword, [Required] DateTime From, [Required] DateTime To);
 
 public enum SearchType
 {

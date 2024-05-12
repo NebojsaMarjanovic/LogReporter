@@ -1,3 +1,4 @@
+using System.Reflection;
 using Unifiedpost.LogReporter.BusinessLogic.Contracts;
 using Unifiedpost.LogReporter.BusinessLogic.Implementations;
 using Unifiedpost.LogReporter.WebApi.Configurations;
@@ -14,6 +15,12 @@ builder.Services.AddKeyedScoped<ILogReporterService, CsvLogReporterService>("csv
 builder.Services.AddScoped<ILogProcessor, LogProcessor>();
 builder.Services.AddOptions<CsvConfiguration>().Bind(builder.Configuration.GetSection("CsvConfiguration")).ValidateOnStart();
 builder.Services.AddOptions<LogFileConfiguration>().Bind(builder.Configuration.GetSection("LogConfiguration")).ValidateOnStart();
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    options.UseInlineDefinitionsForEnums();
+});
 
 var app = builder.Build();
 
