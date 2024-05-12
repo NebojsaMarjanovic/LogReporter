@@ -2,7 +2,6 @@
 using System.Net;
 using Unifiedpost.LogReporter.WebApi.Contracts;
 using Unifiedpost.LogReporter.WebApi.Models;
-using Unifiedpost.LogReporter.WebApi.Utilities;
 
 namespace Unifiedpost.LogReporter.WebApi.Controllers;
 

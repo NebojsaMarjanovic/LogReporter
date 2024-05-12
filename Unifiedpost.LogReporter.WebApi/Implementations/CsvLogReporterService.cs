@@ -33,7 +33,7 @@ namespace Unifiedpost.LogReporter.WebApi.Implementations
             foreach (var request in logReportRequest.RequestParameters)
             {
 
-                    if (request.SearchType is not SearchType.All)
+                if (request.SearchType is not SearchType.All && request.SpecificLogs is not null)
                 {
                     foreach (var specificLog in request.SpecificLogs)
                     {

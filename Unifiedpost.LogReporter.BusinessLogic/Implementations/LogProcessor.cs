@@ -1,4 +1,5 @@
-﻿using System.Threading.Channels;
+﻿using System.Text.RegularExpressions;
+using System.Threading.Channels;
 using Unifiedpost.LogReporter.BusinessLogic.Contracts;
 using Unifiedpost.LogReporter.BusinessLogic.Models;
 
@@ -6,6 +7,9 @@ namespace Unifiedpost.LogReporter.BusinessLogic.Implementations;
 
 public class LogProcessor : ILogProcessor
 {
+    private static readonly RegexOptions _regexOptions = RegexOptions.Compiled;
+    private static readonly Lazy<Regex> _logLineMatcher = new(() => new Regex(@"\[(.*?)\]\s(.*)$", _regexOptions));
+
     public async Task<IEnumerable<LogEntry>> ProcessLogs(string serviceName, IEnumerable<string> logFiles, string keyword, CancellationToken cancellationToken)
     {
         var channel = Channel.CreateUnbounded<LogEntry>();
@@ -21,10 +25,12 @@ public class LogProcessor : ILogProcessor
             {
                 foreach (var line in File.ReadLines(logFile))
                 {
-                    if (line.Contains(keyword))
+                    Match match = _logLineMatcher.Value.Match(line);
+
+                    if (match.Success && line.Contains(keyword))
                     {
-                        //should fix this
-                        await channel.Writer.WriteAsync(new LogEntry(serviceName, logFileName, keyword, line.Substring(line.LastIndexOf(']')+2)));
+                        
+                        await channel.Writer.WriteAsync(new LogEntry(serviceName, logFileName, keyword, match.Groups[2].Value));
                     }
                 }
             }));
@@ -32,10 +38,10 @@ public class LogProcessor : ILogProcessor
 
         var consumer = Task.Run(async () =>
         {
-            await Parallel.ForEachAsync(channel.Reader.ReadAllAsync(), async (logEntry, _) =>
+            await foreach (var logEntry in channel.Reader.ReadAllAsync())
             {
                 logEntries.Add(logEntry);
-            });
+            }
         });
 
         await Task.WhenAll(producers);
